@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EstudianteService } from './services/estudiante.service';
+import { EstudianteService } from './estudiante.service';
 import { Estudiante } from './interfaces/estudiante.interface';
 import { FormsModule } from '@angular/forms';
 
