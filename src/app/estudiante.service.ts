@@ -37,13 +37,17 @@ export class EstudianteService {
   }
 
   crearEstudiante(estudiante: Estudiante): Estudiante[] {
-    estudiante.id = this.estudiantes.length + 1;
+    var newId: number = -1;
+    this.estudiantes.map((e) => {
+      if(e.id > newId) { newId = e.id }
+    });
+    estudiante.id = newId + 1;
     this.estudiantes.push(estudiante);
     return this.estudiantes;
   }
 
   actualizarEstudiante(id: number, estudiante: Estudiante): Estudiante[] {
-    const index = this.estudiantes.findIndex((e) => e.id = id);
+    const index = this.estudiantes.findIndex((e) => e.id === id);
     this.estudiantes[index] = {...estudiante};
     return this.estudiantes;
   }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EstudianteService } from './estudiante.service';
 import { Estudiante } from './interfaces/estudiante.interface';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +9,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppComponent implements OnInit {
 
+  logo: string = '../assets/selaski.png';
   estudiantes: Estudiante[] = [];
   isEdit: boolean = false;
   isCreate: boolean = false;
+  orderBy: string = 'Seleccione una opcion';
+
+  errorNombre: boolean = false;
+  errorApellido: boolean = false;
+  errorTelefono: boolean = false;
+  errorEdad: boolean = false;
+
   estudiante: Estudiante = {
     nombre: '',
     apellido: '',
@@ -39,6 +46,10 @@ export class AppComponent implements OnInit {
   }
 
   editarCrearEstudiante(id: number) {
+    this.validarEstudiante(this.estudiante);
+    if(this.errorApellido || this.errorEdad || this.errorNombre || this.errorTelefono) {
+      return;
+    }
     if(this.isEdit) {
       this.estudiantes = this.estudianteService.actualizarEstudiante(id, this.estudiante);
       this.isEdit = false; 
@@ -47,6 +58,74 @@ export class AppComponent implements OnInit {
       this.isCreate = false;
     }
     this.limpiarEstudiante();
+  }
+
+  cambiarOrden(event: any) {
+    const key: string = event.target.value;
+
+    if(key === 'edad' || key === 'id') {
+      this.estudiantes.sort((x, y) => 
+        x[key] > y[key] ? 1 :
+        x[key] < y[key] ? -1 :
+        0
+      );
+    }
+        
+
+    // switch(key) {
+    //   case 'nombre':
+    //     this.estudiantes.sort((x, y) => {
+    //       if (x.nombre > y.nombre) { return 1; }
+    //       if (x.nombre < y.nombre) { return -1; }
+    //       return 0;
+    //     });
+    //     break;
+    //   case 'apellido':
+    //       this.estudiantes.sort((x, y) => {
+    //         if (x.apellido > y.apellido) { return 1; }
+    //         if (x.apellido < y.apellido) { return -1; }
+    //         return 0;
+    //       });
+    //       break;
+    //     case 'edad':
+    //         this.estudiantes.sort((x, y) => {
+    //           if (x.edad > y.edad) { return 1; }
+    //           if (x.edad < y.edad) { return -1; }
+    //           return 0;
+    //         });
+    //         break;
+    //       case 'id':
+    //         this.estudiantes.sort((x, y) => {
+    //           if (x.id > y.id) { return 1; }
+    //           if (x.id < y.id) { return -1; }
+    //           return 0;
+    //         });
+    //         break;
+    // }
+      
+      console.log('me ordene');
+      console.log(this.estudiantes);
+    
+    
+  }
+
+  private validarEstudiante(estudiante: Estudiante) {
+    this.errorApellido = false;
+    this.errorNombre = false;
+    this.errorEdad = false;
+    this.errorTelefono = false;
+    if(!estudiante.nombre || estudiante.nombre.length < 3) {
+      this.errorNombre = true;
+    }
+    if(!estudiante.edad || estudiante.edad < 1 || typeof estudiante.edad !== 'number') {
+      this.errorEdad = true;
+    }
+    if(!estudiante.telefono || estudiante.telefono.length < 5) {
+      this.errorTelefono = true;
+    }
+    if(!estudiante.apellido || estudiante.apellido.length < 3) {
+      this.errorApellido = true;
+    }
   }
 
   private limpiarEstudiante() {
